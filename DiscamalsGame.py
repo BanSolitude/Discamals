@@ -1,6 +1,6 @@
 from random import choice
 
-FREE_ANIMAL_NAMES = ["Bear", "Chickadee", "Cougar", "Coyote", "Crow", "Duck", "Goose", "Lynx", "Orca", "Raccoon", "Raven", "Seagull", "Squirrel" ]
+FREE_ANIMAL_NAMES = ["bear", "chickadee", "cougar", "coyote", "crow", "duck", "goose", "lynx", "orca", "raccoon", "raven", "seagull", "squirrel" ]
 USED_ANIMAL_NAMES = []
 WINNER = {}
 
@@ -26,6 +26,7 @@ def get_winner(Team1, Team2, WinnerList):
 		if (len(Team1) == 1):
 			WinnerList[frozenset([Team1,Team2])] = choice([Team1,Team2])
 
+		#TODO implement this
 		else:
 			pass
 
@@ -72,7 +73,7 @@ def tournament(PlayersDiscamals, UsedAnimalNames, WinnerList):
 def choose_disc(PlayersDiscamals, msg):
 	_dplayer = ""
 	while (not _dplayer in PlayersDiscamals):
-		_dplayer = input (msg)
+		_dplayer = input(msg).lower()
 
 	return _dplayer
 
