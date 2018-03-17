@@ -13,22 +13,31 @@ def add_disc(FreeAnimalNames, UsedAnimalNames):
 	UsedAnimalNames.append(new_animal)
 	return new_animal
 
-#TODO Implement the way to determine winners from teams
+#Teams should be lists.
 def get_winner(Team1, Team2, WinnerList):
-	Team1 = frozenset([Team1])
-	Team2 = frozenset([Team2])
+	Team1 = frozenset(Team1)
+	Team2 = frozenset(Team2)
 
 	if len(Team1) != len(Team2) or Team1 == Team2:
 		return None
 
 	if  ( not (frozenset([Team1,Team2]) in WinnerList) ):
-		#TODO right now this will always be true, because we take frozenset([team]). Need some sort of check if it's just a string before frozensetting.
 		if (len(Team1) == 1):
 			WinnerList[frozenset([Team1,Team2])] = choice([Team1,Team2])
 
-		#TODO implement this
 		else:
-			pass
+			_score1 = 0
+			_score2 = 0
+			for (_disc1, _disc2) in [(x,y) for x in Team1 for y in Team2]:
+				if ( _disc1 == _disc2 ):
+					continue
+				elif ( get_winner( [_disc1], [_disc2], WinnerList ) == frozenset([_disc1]) ):
+					_score1 += 1
+				else:
+					_score2 += 1
+
+			WinnerList[frozenset([Team1,Team2])] = choice([Team1,Team2], [_score1, _score2])
+
 
 	return WinnerList[frozenset([Team1,Team2])]
 
@@ -42,7 +51,7 @@ def test(PlayersDiscamals, WinnerList):
 	_d1 = choose_disc(PlayersDiscamals, "First  Discamal:")
 	_d2 = choose_disc([d for d in PlayersDiscamals if d!=_d1], "Second Discamal:")
 
-	for _disc in get_winner(_d1, _d2, WinnerList):
+	for _disc in get_winner([_d1], [_d2], WinnerList):
 		print(_disc)
 
 	print("")
@@ -62,7 +71,7 @@ def tournament(PlayersDiscamals, UsedAnimalNames, WinnerList):
 		else:
 			print("Unfortunately you lost the mirror match.")
 
-	elif (get_winner(_dplayer, _dcomp, WinnerList) == frozenset([_dplayer])):
+	elif (get_winner([_dplayer], [_dcomp], WinnerList) == frozenset([_dplayer])):
 		print("And you win!")
 	else:
 		print ("You lose.")
