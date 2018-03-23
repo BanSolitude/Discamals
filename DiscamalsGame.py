@@ -1,4 +1,5 @@
 from random import choice
+from Player import *
 
 FREE_ANIMAL_NAMES = ["bear", "chickadee", "cougar", "coyote", "crow", "duck", "goose", "lynx", "orca", "raccoon", "raven", "seagull", "squirrel" ]
 USED_ANIMAL_NAMES = []
@@ -45,11 +46,11 @@ def get_winner(Team1, Team2, WinnerList):
 #TODO print messages out in a way that's easier to read
 def test(PlayersDiscamals, WinnerList):
 	print ("Choose two Discamals to discover the winner.")
-	
-	#shouldn't let player choose same disc twice
-	#TODO check that the input is valid before moving on
-	_d1 = choose_disc(PlayersDiscamals, "First  Discamal:")
-	_d2 = choose_disc([d for d in PlayersDiscamals if d!=_d1], "Second Discamal:")
+
+	print ("First Discamal")
+	_d1 = select_disc_manually(PlayersDiscamals)
+	print ("Second Discamal")
+	_d2 = select_disc_manually([d for d in PlayersDiscamals if d!=_d1])
 
 	for _disc in get_winner([_d1], [_d2], WinnerList):
 		print(_disc)
@@ -59,10 +60,14 @@ def test(PlayersDiscamals, WinnerList):
 #TODO make tournaments team rather than just 1v1s
 #TODO add ai that choose teams smarter (right now just random)
 #TODO make tournaments more than just a single match
-def tournament(PlayersDiscamals, UsedAnimalNames, WinnerList):
-	_dplayer = choose_disc(PlayersDiscamals, "Choose a Discamal to take to the tournament:")
-	_dcomp = choice(UsedAnimalNames)
+def tournament(AvailableDiscamals, Players, WinnerList):
+	print("Choose a Discamal to take to the tournament.")
+	for player in Players:
+		player.select_disc(AvailableDiscamals)
 
+	#this is just a work around until tounament is improved.
+	_dplayer= Players[0].currentDisc
+	_dcomp = Players[1].currentDisc
 	print ("Your opponent chose", _dcomp)
 	if (_dplayer == _dcomp):
 		_player_wins = choice([True, False])
@@ -78,17 +83,11 @@ def tournament(PlayersDiscamals, UsedAnimalNames, WinnerList):
 
 	print("")
 
-#TODO implement a trie based name-checker, to make inputs easier (don't have to type whole thing)
-def choose_disc(PlayersDiscamals, msg):
-	_dplayer = ""
-	while (not _dplayer in PlayersDiscamals):
-		_dplayer = input(msg).lower()
-
-	return _dplayer
-
 #TODO Some sort of economy
 #TODO Different number of tests/tournaments as the number of discamals goes up.
 if __name__ == '__main__':
+	_players = [Player(input("Please enter your name:"), select_disc_manually), Player("Randy", select_disc_randomly)]
+
 	print ("Here are the starting Discamals:")
 	add_disc(FREE_ANIMAL_NAMES, USED_ANIMAL_NAMES)
 	add_disc(FREE_ANIMAL_NAMES, USED_ANIMAL_NAMES)
@@ -101,7 +100,7 @@ if __name__ == '__main__':
 		for _ in range(int((len(USED_ANIMAL_NAMES) - 1)/2)):
 			test(USED_ANIMAL_NAMES, WINNER)
 		
-		tournament(USED_ANIMAL_NAMES, USED_ANIMAL_NAMES, WINNER)
+		tournament(USED_ANIMAL_NAMES, _players, WINNER)
 		_new = add_disc(FREE_ANIMAL_NAMES, USED_ANIMAL_NAMES)
 		print ("The new discamal is", _new, ". Hope you enjoy it!")
 
