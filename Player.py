@@ -9,18 +9,26 @@ class Player:
 	def __unicode__(self):
 		return self.name
 
-	def select_team(self, AvailableDiscamals):
-		self.currentTeam = self.selectTeam(AvailableDiscamals)
+	def select_team(self, AvailableDiscamals, TeamSize):
+		self.currentTeam = self.selectTeam(AvailableDiscamals, TeamSize)
 
-#TODO make these work for teams of arbitrary length
-def select_team_randomly(AvailableDiscamals):
-	return frozenset([choice(AvailableDiscamals)])
+def select_team_randomly(AvailableDiscamals, TeamSize):
+	#Unfortunately we can't use choices here because it chooses with replacement.
+	_temp = [disc for disc in AvailableDiscamals]
+	_team = []
+	while len(_team) < TeamSize:
+		_team.append(choice(AvailableDiscamals))
+	return frozenset(_team)
 
-def select_team_manually(PlayersDiscamals):
+def select_team_manually(PlayersDiscamals, TeamSize):
 	_dplayer = ""
-	while (not _dplayer in PlayersDiscamals):
-		_dplayer = input("Please enter your choice of discamal:").lower()
-		if (not _dplayer in PlayersDiscamals):
-			print ("Your selection was invalid, please try again")
+	_temp = [disc for disc in PlayersDiscamals]
+	_team = []
+	while len(_team) < TeamSize:
+		while (not _dplayer in _temp or _dplayer in _team):
+			_dplayer = input("Please enter your choice of discamal:").lower()
+			if (not _dplayer in _temp or _dplayer in _team):
+				print ("Your selection was invalid, please try again")
+		_team.append(_dplayer)
 
-	return frozenset([_dplayer])
+	return frozenset(_team)
