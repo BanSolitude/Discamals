@@ -1,20 +1,18 @@
 from random import choice
 from random import choices
 from Player import *
+from Discamal import *
 
-FREE_ANIMAL_NAMES = ["bear", "chickadee", "cougar", "coyote", "crow", "duck", "goose", "lynx", "orca", "raccoon", "raven", "seagull", "squirrel" ]
-USED_ANIMAL_NAMES = []
+#TODO do these need to be globals, or can they be shoved into the __main__ method?
+ANIMAL_NAMES = ["bear", "chickadee", "cougar", "coyote", "crow", "duck", "goose", "lynx", "orca", "raccoon", "raven", "seagull", "squirrel" ]
+DISC_LIST = []
 WINNER = {}
 
-def add_disc(FreeAnimalNames, UsedAnimalNames):
-	if ( len(FreeAnimalNames) == 0 ):
-		return
-
-	new_animal = choice(FreeAnimalNames)
-	print(new_animal)
-	FreeAnimalNames.remove(new_animal)
-	UsedAnimalNames.append(new_animal)
-	return new_animal
+def add_disc(DiscFactory):
+	_new_disc = DiscFactory.new_discamal()
+	print("New disc is %s" % _new_disc.name)
+	DISC_LIST.append(_new_disc)
+	return _new_disc
 
 #Teams are frozensets.
 def get_winner(Team1, Team2, WinnerList):
@@ -32,13 +30,12 @@ def get_winner(Team1, Team2, WinnerList):
 			for (_disc1, _disc2) in [(x,y) for x in Team1 for y in Team2]:
 				if ( _disc1 == _disc2 ):
 					continue
-				elif ( get_winner( frozenset(_disc1), frozenset(_disc2), WinnerList ) == frozenset([_disc1]) ):
+				elif ( get_winner( frozenset([_disc1]), frozenset([_disc2]), WinnerList ) == frozenset([_disc1]) ):
 					_score1 += 1
 				else:
 					_score2 += 1
 
 			WinnerList[frozenset([Team1,Team2])] = choices([Team1,Team2], [_score1, _score2])[0]
-
 
 	return WinnerList[frozenset([Team1,Team2])]
 
@@ -105,7 +102,7 @@ def single_elim(Players, WinnerList):
 	print ("%s won the tournament with %s." % (_cur_round[0].name, format_team(_cur_round[0].currentTeam)))
 
 def format_team(Team):
-	return ' '.join(Team)
+	return ' '.join(map(str,Team))
 
 #TODO Some sort of economy
 #TODO Different number of tests/tournaments as the number of discamals goes up.
@@ -114,23 +111,24 @@ if __name__ == '__main__':
 			    Player("Randy", select_team_randomly),
 			    Player("Andy", select_team_randomly),
 			    Player("Mandy", select_team_randomly)]
+	_disc_factory = DiscamalFactory(ANIMAL_NAMES)
 
 	print ("Here are the starting Discamals:")
-	add_disc(FREE_ANIMAL_NAMES, USED_ANIMAL_NAMES)
-	add_disc(FREE_ANIMAL_NAMES, USED_ANIMAL_NAMES)
+	add_disc(_disc_factory)
+	add_disc(_disc_factory)
 	print ("Lucky Snow would like to offer you these two Discamals free if you agree to participate in our tournament tomorrow!")
 	print ("Take today to try them out.")
 
-	test(USED_ANIMAL_NAMES, WINNER)
-	while len(FREE_ANIMAL_NAMES) > 0:		
-		for _ in range(int((len(USED_ANIMAL_NAMES) - 1)/2)):
-			test(USED_ANIMAL_NAMES, WINNER)
-		
+	test(DISC_LIST, WINNER)
+	while True:
+		for _ in range(int((len(DISC_LIST) - 1)/2)):
+			test(DISC_LIST, WINNER)
+
 		#TODO better team size selection.
 		#	  want there to still be some 1's, but later should be more 2's or even 3's
 		_team_size  = choice([1,2])
-		tournament(USED_ANIMAL_NAMES, _players, WINNER, _team_size)
-		_new = add_disc(FREE_ANIMAL_NAMES, USED_ANIMAL_NAMES)
-		print ("The new discamal is", _new + ". Hope you enjoy it!")
+		tournament(DISC_LIST, _players, WINNER, _team_size)
+		_new = add_disc(_disc_factory)
+		print ("The new discamal is %s. Hope you enjoy it!" % _new)
 
 	print ("End of game.")
