@@ -15,5 +15,8 @@ class TestDiscamals(unittest.TestCase):
         DiscamalsGame.add_disc(self._freeAnimalNames, self._usedAnimalNames)
         unittest.assertEqual(length_before - 1, len(self._freeAnimalNames))
 
+    def test_GetWinner_WinnerExistsInDict(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()
