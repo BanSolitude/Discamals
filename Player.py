@@ -7,11 +7,8 @@ class Player:
 		self.currentTeam = None
 
     #TODO is this what I want, or should users have to request name specifically?
-	def __unicode__(self):
-		return self.name
-
 	def __str__(self):
-		return unicode(self).encode('utf-8')
+		return self.name
 
 	def select_team(self, AvailableDiscamals, TeamSize):
 		self.currentTeam = self.selectTeam(AvailableDiscamals, TeamSize)
