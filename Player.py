@@ -23,6 +23,10 @@ def select_team_randomly(AvailableDiscamals, TeamSize):
 		_temp.remove(_choice)
 	return frozenset(_team)
 
+def select_team_most_wins(AvailableDiscamals, TeamSize):
+	_temp = sorted(AvailableDiscamals, key=lambda x: x.tournamentWins, reverse=True)
+	return frozenset(_temp[0:TeamSize])
+
 def select_team_manually(PlayersDiscamals, TeamSize):
 	_dplayer = None
 	_temp = [disc for disc in PlayersDiscamals]

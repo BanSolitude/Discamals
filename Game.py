@@ -18,7 +18,7 @@ def add_disc(DiscFactory):
 def get_winner(Team1, Team2, WinnerList):
 	#TODO is a case for a "bye" needed here?
 	if len(Team1) != len(Team2) or Team1 == Team2:
-		return frozenset()
+		raise Exception()
 
 	if  ( not (frozenset([Team1,Team2]) in WinnerList) ):
 		if (len(Team1) == 1):
@@ -69,7 +69,10 @@ def tournament(AvailableDiscamals, Players, WinnerList, TeamSize):
 
 	#this is just a work around until tounament code is improved.
 	#for now single elim. plan is swiss to top x (8?)
-	single_elim(Players, WinnerList)
+	_winner = single_elim(Players, WinnerList)
+	for _disc in _winner.currentTeam:
+		_disc.tournamentWins += 1
+	print ("%s won the tournament with %s." % (_winner.name, format_team(_winner.currentTeam)))
 
 	print("")
 
@@ -99,7 +102,7 @@ def single_elim(Players, WinnerList):
 
 		_cur_round = _next_round
 
-	print ("%s won the tournament with %s." % (_cur_round[0].name, format_team(_cur_round[0].currentTeam)))
+	return _cur_round[0]
 
 def format_team(Team):
 	return ' '.join(map(str,Team))
@@ -110,7 +113,7 @@ if __name__ == '__main__':
 	_players = [Player(input("Please enter your name:"), select_team_manually),
 			    Player("Randy", select_team_randomly),
 			    Player("Andy", select_team_randomly),
-			    Player("Mandy", select_team_randomly)]
+			    Player("Mandy", select_team_most_wins)]
 	_disc_factory = DiscamalFactory(ANIMAL_NAMES)
 
 	print ("Here are the starting Discamals:")

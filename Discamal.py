@@ -3,6 +3,7 @@ from random import choice
 class Discamal:
     def __init__(self, Name):
         self.name = Name
+        self.tournamentWins = 0
 
     #TODO is this what I want, or should users have to request name specifically?
     def __str__(self):
