@@ -130,7 +130,10 @@ if __name__ == '__main__':
 		#	  want there to still be some 1's, but later should be more 2's or even 3's
 		_team_size  = choice([1,2])
 		tournament(DISC_LIST, _players, WINNER, _team_size)
-		_new = add_disc(_disc_factory)
+		try:
+		  _new = add_disc(_disc_factory)
+		except(IndexError):
+		  pass #out of discamals.
 
 
 	input("End of game.")
